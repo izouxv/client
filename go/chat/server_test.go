@@ -2657,7 +2657,6 @@ func TestChatSrvGetThreadNonblockServerPage(t *testing.T) {
 		case res := <-ui.ThreadCb:
 			require.False(t, res.Full)
 			require.Equal(t, 1, len(res.Thread.Messages))
-			require.Nil(t, res.Thread.UnreadLineID)
 			require.NotNil(t, res.Thread.Pagination)
 			require.False(t, res.Thread.Pagination.Last)
 		case <-time.After(20 * time.Second):
@@ -2668,7 +2667,6 @@ func TestChatSrvGetThreadNonblockServerPage(t *testing.T) {
 		case res := <-ui.ThreadCb:
 			require.True(t, res.Full)
 			require.Equal(t, 1, len(res.Thread.Messages))
-			require.Nil(t, res.Thread.UnreadLineID)
 			require.Equal(t, chat1.MessageID(6), res.Thread.Messages[0].GetMessageID())
 			p = res.Thread.Pagination
 			require.NotNil(t, p)
@@ -2703,7 +2701,6 @@ func TestChatSrvGetThreadNonblockServerPage(t *testing.T) {
 		case res := <-ui.ThreadCb:
 			require.False(t, res.Full)
 			require.Equal(t, 1, len(res.Thread.Messages))
-			require.Nil(t, res.Thread.UnreadLineID)
 			require.NotNil(t, res.Thread.Pagination)
 			require.False(t, res.Thread.Pagination.Last)
 		case <-time.After(20 * time.Second):
@@ -2714,7 +2711,6 @@ func TestChatSrvGetThreadNonblockServerPage(t *testing.T) {
 		case res := <-ui.ThreadCb:
 			require.True(t, res.Full)
 			require.Equal(t, 1, len(res.Thread.Messages))
-			require.Nil(t, res.Thread.UnreadLineID)
 			require.Equal(t, chat1.MessageID(5), res.Thread.Messages[0].GetMessageID())
 			p = res.Thread.Pagination
 			require.NotNil(t, p)
@@ -2750,7 +2746,6 @@ func TestChatSrvGetThreadNonblockServerPage(t *testing.T) {
 				case res := <-ui.ThreadCb:
 					require.False(t, res.Full)
 					require.Equal(t, 3, len(res.Thread.Messages))
-					require.Nil(t, res.Thread.UnreadLineID)
 					require.NotNil(t, res.Thread.Pagination)
 					require.True(t, res.Thread.Pagination.Last)
 				case <-time.After(20 * time.Second):
@@ -2769,7 +2764,6 @@ func TestChatSrvGetThreadNonblockServerPage(t *testing.T) {
 				case res := <-ui.ThreadCb:
 					require.True(t, res.Full)
 					require.Equal(t, 3, len(res.Thread.Messages))
-					require.Nil(t, res.Thread.UnreadLineID)
 					require.Equal(t, chat1.MessageID(4), res.Thread.Messages[0].GetMessageID())
 					require.NotNil(t, res.Thread.Pagination.Last)
 					require.True(t, res.Thread.Pagination.Last)
@@ -2836,7 +2830,6 @@ func TestChatSrvGetThreadNonblockIncremental(t *testing.T) {
 		case res := <-ui.ThreadCb:
 			require.False(t, res.Full)
 			require.Equal(t, numMsgs, len(res.Thread.Messages))
-			require.Nil(t, res.Thread.UnreadLineID)
 		case <-time.After(20 * time.Second):
 			require.Fail(t, "no thread cb")
 		}
@@ -2845,7 +2838,6 @@ func TestChatSrvGetThreadNonblockIncremental(t *testing.T) {
 		case res := <-ui.ThreadCb:
 			require.True(t, res.Full)
 			require.Equal(t, numMsgs, len(res.Thread.Messages))
-			require.Nil(t, res.Thread.UnreadLineID)
 		case <-time.After(20 * time.Second):
 			require.Fail(t, "no thread cb")
 		}
@@ -2874,7 +2866,6 @@ func TestChatSrvGetThreadNonblockIncremental(t *testing.T) {
 		case res := <-ui.ThreadCb:
 			require.False(t, res.Full)
 			require.Equal(t, numMsgs, len(res.Thread.Messages))
-			require.Nil(t, res.Thread.UnreadLineID)
 		case <-time.After(20 * time.Second):
 			require.Fail(t, "no thread cb")
 		}
@@ -2885,7 +2876,6 @@ func TestChatSrvGetThreadNonblockIncremental(t *testing.T) {
 			require.True(t, res.Full)
 			require.Equal(t, 1, len(res.Thread.Messages))
 			require.True(t, res.Thread.Pagination.Last)
-			require.Nil(t, res.Thread.UnreadLineID)
 		case <-time.After(20 * time.Second):
 			require.Fail(t, "no thread cb")
 		}
@@ -2977,7 +2967,6 @@ func TestChatSrvGetThreadNonblockSupersedes(t *testing.T) {
 			require.False(t, res.Full)
 			require.Equal(t, len(msgIDs), len(res.Thread.Messages))
 			// Not unread
-			require.Nil(t, res.Thread.UnreadLineID)
 			require.Equal(t, msgIDs, utils.PluckUIMessageIDs(res.Thread.Messages))
 			confirmIsText(t, msgID1, res.Thread.Messages[1], "hi")
 			require.False(t, res.Thread.Messages[1].Valid().Superseded)
@@ -2992,7 +2981,6 @@ func TestChatSrvGetThreadNonblockSupersedes(t *testing.T) {
 			require.True(t, res.Full)
 			require.Equal(t, len(msgIDs), len(res.Thread.Messages))
 			// Not unread
-			require.Nil(t, res.Thread.UnreadLineID)
 			confirmIsPlaceholder(t, editMsgID1, res.Thread.Messages[0], true)
 			confirmIsText(t, msgID1, res.Thread.Messages[1], "edited")
 			confirmIsPlaceholder(t, 1, res.Thread.Messages[2], true)
@@ -3029,7 +3017,6 @@ func TestChatSrvGetThreadNonblockSupersedes(t *testing.T) {
 			require.False(t, res.Full)
 			require.Equal(t, len(msgIDs), len(res.Thread.Messages))
 			// Not unread
-			require.Nil(t, res.Thread.UnreadLineID)
 			require.Equal(t, msgIDs, utils.PluckUIMessageIDs(res.Thread.Messages))
 			confirmIsPlaceholder(t, deleteMsgID, res.Thread.Messages[0], false)
 			confirmIsPlaceholder(t, editMsgID1, res.Thread.Messages[1], false)
@@ -3045,7 +3032,6 @@ func TestChatSrvGetThreadNonblockSupersedes(t *testing.T) {
 			require.True(t, res.Full)
 			require.Equal(t, len(msgIDs), len(res.Thread.Messages))
 			// Not unread
-			require.Nil(t, res.Thread.UnreadLineID)
 			confirmIsPlaceholder(t, deleteMsgID, res.Thread.Messages[0], true)
 			confirmIsPlaceholder(t, editMsgID1, res.Thread.Messages[1], true)
 			confirmIsPlaceholder(t, msgID1, res.Thread.Messages[2], true)
@@ -3061,9 +3047,9 @@ func TestChatSrvGetThreadNonblockSupersedes(t *testing.T) {
 	})
 }
 
-func TestChatSrvGetUnreadLineID(t *testing.T) {
+func TestChatSrvGetUnreadLine(t *testing.T) {
 	runWithMemberTypes(t, func(mt chat1.ConversationMembersType) {
-		ctc := makeChatTestContext(t, "GetUnreadLineID", 2)
+		ctc := makeChatTestContext(t, "GetUnreadLine", 2)
 		defer ctc.cleanup()
 		users := ctc.users()
 
@@ -3125,8 +3111,8 @@ func TestChatSrvGetUnreadLineID(t *testing.T) {
 		case res := <-ui.ThreadCb:
 			require.False(t, res.Full)
 			require.Equal(t, 1, len(res.Thread.Messages))
-			require.NotNil(t, res.Thread.UnreadLineID)
-			require.Equal(t, msgID1, *res.Thread.UnreadLineID)
+			//require.NotNil(t, res.Thread.UnreadLineID)
+			//require.Equal(t, msgID1, *res.Thread.UnreadLineID)
 		case <-time.After(20 * time.Second):
 			require.Fail(t, "no thread cb")
 		}
@@ -3135,8 +3121,8 @@ func TestChatSrvGetUnreadLineID(t *testing.T) {
 		case res := <-ui.ThreadCb:
 			require.True(t, res.Full)
 			require.Equal(t, 1, len(res.Thread.Messages))
-			require.NotNil(t, res.Thread.UnreadLineID)
-			require.Equal(t, msgID1, *res.Thread.UnreadLineID)
+			//require.NotNil(t, res.Thread.UnreadLineID)
+			//require.Equal(t, msgID1, *res.Thread.UnreadLineID)
 		case <-time.After(20 * time.Second):
 			require.Fail(t, "no thread cb")
 		}
@@ -3167,8 +3153,8 @@ func TestChatSrvGetUnreadLineID(t *testing.T) {
 		case res := <-ui.ThreadCb:
 			require.False(t, res.Full)
 			require.Equal(t, 2, len(res.Thread.Messages))
-			require.NotNil(t, res.Thread.UnreadLineID)
-			require.Equal(t, msgID1, *res.Thread.UnreadLineID)
+			//require.NotNil(t, res.Thread.UnreadLineID)
+			//require.Equal(t, msgID1, *res.Thread.UnreadLineID)
 		case <-time.After(20 * time.Second):
 			require.Fail(t, "no thread cb")
 		}
@@ -3177,8 +3163,8 @@ func TestChatSrvGetUnreadLineID(t *testing.T) {
 		case res := <-ui.ThreadCb:
 			require.True(t, res.Full)
 			require.Equal(t, 2, len(res.Thread.Messages))
-			require.NotNil(t, res.Thread.UnreadLineID)
-			require.Equal(t, msgID1, *res.Thread.UnreadLineID)
+			//require.NotNil(t, res.Thread.UnreadLineID)
+			//require.Equal(t, msgID1, *res.Thread.UnreadLineID)
 		case <-time.After(20 * time.Second):
 			require.Fail(t, "no thread cb")
 		}
@@ -3212,8 +3198,8 @@ func TestChatSrvGetUnreadLineID(t *testing.T) {
 		case res := <-ui.ThreadCb:
 			require.False(t, res.Full)
 			require.Equal(t, 1, len(res.Thread.Messages))
-			require.NotNil(t, res.Thread.UnreadLineID)
-			require.Equal(t, msgID2, *res.Thread.UnreadLineID)
+			//require.NotNil(t, res.Thread.UnreadLineID)
+			//require.Equal(t, msgID2, *res.Thread.UnreadLineID)
 		case <-time.After(20 * time.Second):
 			require.Fail(t, "no thread cb")
 		}
@@ -3222,8 +3208,8 @@ func TestChatSrvGetUnreadLineID(t *testing.T) {
 		case res := <-ui.ThreadCb:
 			require.True(t, res.Full)
 			require.Equal(t, 3, len(res.Thread.Messages))
-			require.NotNil(t, res.Thread.UnreadLineID)
-			require.Equal(t, msgID2, *res.Thread.UnreadLineID)
+			//require.NotNil(t, res.Thread.UnreadLineID)
+			//require.Equal(t, msgID2, *res.Thread.UnreadLineID)
 		case <-time.After(20 * time.Second):
 			require.Fail(t, "no thread cb")
 		}
@@ -3255,7 +3241,7 @@ func TestChatSrvGetUnreadLineID(t *testing.T) {
 		case res := <-ui.ThreadCb:
 			require.False(t, res.Full)
 			require.Equal(t, 0, len(res.Thread.Messages))
-			require.Nil(t, res.Thread.UnreadLineID)
+			//require.Nil(t, res.Thread.UnreadLineID)
 		case <-time.After(20 * time.Second):
 			require.Fail(t, "no thread cb")
 		}
@@ -3264,7 +3250,7 @@ func TestChatSrvGetUnreadLineID(t *testing.T) {
 		case res := <-ui.ThreadCb:
 			require.True(t, res.Full)
 			require.Equal(t, 3, len(res.Thread.Messages))
-			require.Nil(t, res.Thread.UnreadLineID)
+			// require.Nil(t, res.Thread.UnreadLineID)
 		case <-time.After(20 * time.Second):
 			require.Fail(t, "no thread cb")
 		}
@@ -3398,8 +3384,6 @@ func TestChatSrvGetThreadNonblockPlaceholders(t *testing.T) {
 		case res := <-ui.ThreadCb:
 			require.False(t, res.Full)
 			require.Equal(t, len(msgIDs), len(res.Thread.Messages))
-			// Not unread
-			require.Nil(t, res.Thread.UnreadLineID)
 			require.Equal(t, msgIDs, utils.PluckUIMessageIDs(res.Thread.Messages))
 			confirmIsText(t, msgID3, res.Thread.Messages[0], "hi")
 			confirmIsPlaceholder(t, editMsgID2, res.Thread.Messages[1], false)
@@ -3415,8 +3399,6 @@ func TestChatSrvGetThreadNonblockPlaceholders(t *testing.T) {
 		case res := <-ui.ThreadCb:
 			require.True(t, res.Full)
 			require.Equal(t, len(msgIDs)-1, len(res.Thread.Messages))
-			// Not unread
-			require.Nil(t, res.Thread.UnreadLineID)
 			confirmIsPlaceholder(t, editMsgID2, res.Thread.Messages[0], true)
 			confirmIsText(t, msgID2, res.Thread.Messages[1], "edited")
 			confirmIsPlaceholder(t, editMsgID1, res.Thread.Messages[2], true)
@@ -3492,8 +3474,6 @@ func TestChatSrvGetThreadNonblockPlaceholderFirst(t *testing.T) {
 		case res := <-ui.ThreadCb:
 			require.False(t, res.Full)
 			require.Equal(t, len(msgIDs), len(res.Thread.Messages))
-			// Not unread
-			require.Nil(t, res.Thread.UnreadLineID)
 			require.Equal(t, msgIDs, utils.PluckUIMessageIDs(res.Thread.Messages))
 			confirmIsPlaceholder(t, msgID2, res.Thread.Messages[0], false)
 			confirmIsText(t, msgID1, res.Thread.Messages[1], "hi")
@@ -3506,8 +3486,6 @@ func TestChatSrvGetThreadNonblockPlaceholderFirst(t *testing.T) {
 		case res := <-ui.ThreadCb:
 			require.True(t, res.Full)
 			require.Equal(t, len(msgIDs)-1, len(res.Thread.Messages))
-			// Not unread
-			require.Nil(t, res.Thread.UnreadLineID)
 			confirmIsText(t, msgID2, res.Thread.Messages[0], "hi")
 			confirmIsPlaceholder(t, 1, res.Thread.Messages[1], true)
 		case <-time.After(20 * time.Second):
@@ -3606,7 +3584,6 @@ func TestChatSrvGetThreadNonblock(t *testing.T) {
 		require.NoError(t, err)
 		res := receiveThreadResult(t, ui.ThreadCb)
 		require.Zero(t, len(res.Messages))
-		require.Nil(t, res.UnreadLineID)
 
 		t.Logf("send a bunch of messages")
 		numMsgs := 20
@@ -3626,7 +3603,6 @@ func TestChatSrvGetThreadNonblock(t *testing.T) {
 		require.NoError(t, err)
 		res = receiveThreadResult(t, ui.ThreadCb)
 		require.Equal(t, numMsgs, len(res.Messages))
-		require.Nil(t, res.UnreadLineID)
 
 		t.Logf("read back with a delay on the local pull")
 
@@ -3644,7 +3620,6 @@ func TestChatSrvGetThreadNonblock(t *testing.T) {
 		require.NoError(t, err)
 		res = receiveThreadResult(t, ui.ThreadCb)
 		require.Equal(t, numMsgs, len(res.Messages))
-		require.Nil(t, res.UnreadLineID)
 		clock.Advance(20 * time.Minute)
 		select {
 		case <-ui.ThreadCb:
